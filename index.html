@@ -4,977 +4,238 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión de Pedidos</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2196F3">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #2196F3;
-            --success-color: #4CAF50;
-            --warning-color: #FF9800;
-            --danger-color: #f44336;
-            --info-color: #2196F3;
-            --light-color: #f8f9fa;
-            --dark-color: #343a40;
-            --border-radius: 8px;
-            --shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--light-color);
-            color: var(--dark-color);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        /* Header */
-        .header {
-            background: white;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            flex-wrap: wrap;
-        }
-
-        .navbar h1 {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            margin-bottom: 0;
-        }
-
-        .nav-controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .role-switch {
-            padding: 0.5rem 1rem;
-            border: 2px solid var(--primary-color);
-            background: white;
-            color: var(--primary-color);
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .role-switch.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Main Layout */
-        .main-content {
-            padding: 2rem 0;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 1.5rem;
-            transition: transform 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            text-align: center;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            display: block;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Forms */
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e9ecef;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-        }
-
-        .form-control.error {
-            border-color: var(--danger-color);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            transition: all 0.2s ease;
-            min-height: 48px;
-            min-width: 48px;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1976D2;
-        }
-
-        .btn-success {
-            background: var(--success-color);
-            color: white;
-        }
-
-        .btn-warning {
-            background: var(--warning-color);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        /* Order Status */
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-preparing {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .status-ready {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-delivered {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        /* Search and Filters */
-        .search-filters {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 1.5rem;
-        }
-
-        .search-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
-            gap: 1rem;
-            align-items: end;
-        }
-
-        /* Order List */
-        .orders-list {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .order-item {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e9ecef;
-            display: grid;
-            grid-template-columns: auto 1fr auto auto;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .order-item:last-child {
-            border-bottom: none;
-        }
-
-        .order-info h4 {
-            margin-bottom: 0.5rem;
-            color: var(--dark-color);
-        }
-
-        .order-details {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .order-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Toast Notifications */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: var(--border-radius);
-            color: white;
-            font-weight: 600;
-            z-index: 1001;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success { background: var(--success-color); }
-        .toast.error { background: var(--danger-color); }
-        .toast.warning { background: var(--warning-color); }
-        .toast.info { background: var(--info-color); }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .nav-controls {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .search-row {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .order-item {
-                grid-template-columns: 1fr;
-                text-align: left;
-            }
-
-            .order-actions {
-                justify-content: center;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .btn-group {
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .navbar h1 {
-                font-size: 1.2rem;
-            }
-        }
-
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary-color);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Hidden elements */
-        .hidden { display: none !important; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <nav class="navbar">
-                <h1>📦 Gestión de Pedidos</h1>
-                <div class="nav-controls">
-                    <select id="roleSelect" class="form-control" style="width: auto;">
-                        <option value="socio-a">Socio A (Preparación)</option>
-                        <option value="socio-b">Socio B (Delivery)</option>
-                    </select>
-                    <button class="btn btn-primary" onclick="showModal('orderModal')">+ Nuevo Pedido</button>
-                    <button class="btn btn-outline" onclick="exportData()">📊 Exportar</button>
-                </div>
-            </nav>
-        </div>
-    </header>
-
-    <main class="main-content">
-        <div class="container">
-            <!-- Statistics Dashboard -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span class="stat-number" id="totalOrders">0</span>
-                    <span class="stat-label">Total Pedidos</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number" id="pendingOrders">0</span>
-                    <span class="stat-label">Pendientes</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number" id="readyOrders">0</span>
-                    <span class="stat-label">Listos</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number" id="deliveredOrders">0</span>
-                    <span class="stat-label">Entregados</span>
-                </div>
+    <div class="container">
+        <header class="app-header">
+            <h1>Sistema de Gestión de Pedidos</h1>
+            <div class="header-actions">
+                <button id="toggle-calendar" class="btn btn-secondary">
+                    <i class="bi bi-calendar3"></i> Calendario
+                </button>
+                <button id="toggle-history" class="btn btn-secondary">
+                    <i class="bi bi-clock-history"></i> Historial
+                </button>
+                <button id="new-order" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Nuevo Pedido
+                </button>
+                <button id="debug-btn" class="btn btn-secondary">
+                    <i class="bi bi-bug"></i> Debug
+                </button>
             </div>
+        </header>
 
-            <!-- Search and Filters -->
-            <div class="search-filters">
-                <div class="search-row">
+        <!-- Sección Principal de Pedidos -->
+        <main id="main-content" class="main-content">
+            <div class="order-form-section">
+                <h2>Registrar Nuevo Pedido</h2>
+                <form id="order-form" class="order-form">
                     <div class="form-group">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Buscar por cliente o ID...">
+                        <label for="customer-name">
+                            <i class="bi bi-person"></i> Nombre del Cliente
+                        </label>
+                        <input type="text" id="customer-name" name="customerName" required>
                     </div>
+
                     <div class="form-group">
-                        <select id="statusFilter" class="form-control">
-                            <option value="">Todos los estados</option>
-                            <option value="pending">Pendiente</option>
-                            <option value="preparing">Preparando</option>
-                            <option value="ready">Listo</option>
-                            <option value="delivered">Entregado</option>
+                        <label for="customer-phone">
+                            <i class="bi bi-telephone"></i> Teléfono
+                        </label>
+                        <input type="tel" id="customer-phone" name="customerPhone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-type">
+                            <i class="bi bi-box"></i> Tipo de Producto
+                        </label>
+                        <select id="product-type" name="productType" required>
+                            <option value="">Seleccionar producto</option>
+                            <option value="pizza">Pizza</option>
+                            <option value="hamburguesa">Hamburguesa</option>
+                            <option value="ensalada">Ensalada</option>
+                            <option value="bebida">Bebida</option>
+                            <option value="postre">Postre</option>
+                            <option value="combo">Combo</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <select id="typeFilter" class="form-control">
-                            <option value="">Todos los tipos</option>
-                            <option value="delivery">Delivery</option>
-                            <option value="pickup">Recogida</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" onclick="filterOrders()">Filtrar</button>
-                </div>
-            </div>
 
-            <!-- Orders List -->
-            <div class="orders-list">
-                <div id="ordersList" class="loading">
-                    <div class="spinner"></div>
-                    <p>Cargando pedidos...</p>
-                </div>
-            </div>
-        </div>
-    </main>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quantity">
+                                <i class="bi bi-123"></i> Cantidad
+                            </label>
+                            <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+                        </div>
 
-    <!-- Order Modal -->
-    <div id="orderModal" class="modal">
-        <div class="modal-content">
-            <h2>Nuevo Pedido</h2>
-            <form id="orderForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Cliente *</label>
-                        <input type="text" id="customerName" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Teléfono *</label>
-                        <input type="tel" id="customerPhone" class="form-control" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Dirección *</label>
-                    <textarea id="customerAddress" class="form-control" rows="2" required></textarea>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Tipo *</label>
-                        <select id="orderType" class="form-control" required>
-                            <option value="delivery">Delivery</option>
-                            <option value="pickup">Recogida</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Total *</label>
-                        <input type="number" id="orderTotal" class="form-control" step="0.01" min="0" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Productos *</label>
-                    <textarea id="orderProducts" class="form-control" rows="3" placeholder="Ej: 2x Pizza Margherita, 1x Coca Cola" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Notas</label>
-                    <textarea id="orderNotes" class="form-control" rows="2" placeholder="Instrucciones especiales..."></textarea>
-                </div>
-                
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-primary">Crear Pedido</button>
-                    <button type="button" class="btn btn-outline" onclick="hideModal('orderModal')">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Order Management System
-        class OrderManager {
-            constructor() {
-                this.orders = JSON.parse(localStorage.getItem('orders') || '[]');
-                this.currentOrderId = parseInt(localStorage.getItem('lastOrderId') || '0');
-                this.currentRole = localStorage.getItem('currentRole') || 'socio-a';
-            }
-
-            createOrder(orderData) {
-                const order = {
-                    id: ++this.currentOrderId,
-                    ...orderData,
-                    status: 'pending',
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    estimatedTime: this.calculateEstimatedTime(orderData.type)
-                };
-                
-                this.orders.unshift(order);
-                this.saveToStorage();
-                this.checkDelayedOrders();
-                return order;
-            }
-
-            updateOrder(orderId, updates) {
-                const orderIndex = this.orders.findIndex(o => o.id === orderId);
-                if (orderIndex !== -1) {
-                    this.orders[orderIndex] = {
-                        ...this.orders[orderIndex],
-                        ...updates,
-                        updatedAt: new Date().toISOString()
-                    };
-                    this.saveToStorage();
-                    return this.orders[orderIndex];
-                }
-                return null;
-            }
-
-            deleteOrder(orderId) {
-                this.orders = this.orders.filter(o => o.id !== orderId);
-                this.saveToStorage();
-            }
-
-            getOrders(filters = {}) {
-                let filtered = [...this.orders];
-                
-                if (filters.status) {
-                    filtered = filtered.filter(o => o.status === filters.status);
-                }
-                
-                if (filters.type) {
-                    filtered = filtered.filter(o => o.type === filters.type);
-                }
-                
-                if (filters.search) {
-                    const search = filters.search.toLowerCase();
-                    filtered = filtered.filter(o => 
-                        o.customerName?.toLowerCase().includes(search) ||
-                        o.id.toString().includes(search) ||
-                        o.customerPhone?.includes(search)
-                    );
-                }
-
-                // Role-based filtering
-                if (this.currentRole === 'socio-a') {
-                    // Socio A focuses on preparation
-                    filtered = filtered.filter(o => ['pending', 'preparing'].includes(o.status));
-                } else if (this.currentRole === 'socio-b') {
-                    // Socio B focuses on delivery coordination
-                    filtered = filtered.filter(o => ['ready', 'delivered'].includes(o.status) || o.type === 'delivery');
-                }
-                
-                return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            }
-
-            calculateEstimatedTime(type) {
-                const baseTime = type === 'delivery' ? 45 : 20; // minutes
-                return new Date(Date.now() + baseTime * 60 * 1000).toISOString();
-            }
-
-            checkDelayedOrders() {
-                const now = new Date();
-                const delayed = this.orders.filter(order => {
-                    const estimated = new Date(order.estimatedTime);
-                    return estimated < now && ['pending', 'preparing'].includes(order.status);
-                });
-
-                delayed.forEach(order => {
-                    showToast(`¡Pedido #${order.id} está retrasado!`, 'warning');
-                });
-            }
-
-            getStatistics() {
-                const today = new Date().toDateString();
-                const todayOrders = this.orders.filter(o => 
-                    new Date(o.createdAt).toDateString() === today
-                );
-
-                return {
-                    total: todayOrders.length,
-                    pending: todayOrders.filter(o => o.status === 'pending').length,
-                    preparing: todayOrders.filter(o => o.status === 'preparing').length,
-                    ready: todayOrders.filter(o => o.status === 'ready').length,
-                    delivered: todayOrders.filter(o => o.status === 'delivered').length,
-                    revenue: todayOrders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0)
-                };
-            }
-
-            saveToStorage() {
-                localStorage.setItem('orders', JSON.stringify(this.orders));
-                localStorage.setItem('lastOrderId', this.currentOrderId.toString());
-                localStorage.setItem('currentRole', this.currentRole);
-            }
-
-            exportData() {
-                const data = this.orders.map(order => ({
-                    ID: order.id,
-                    Cliente: order.customerName,
-                    Teléfono: order.customerPhone,
-                    Dirección: order.customerAddress,
-                    Tipo: order.type === 'delivery' ? 'Delivery' : 'Recogida',
-                    Estado: this.getStatusText(order.status),
-                    Total: `$${parseFloat(order.total).toFixed(2)}`,
-                    Productos: order.products,
-                    'Fecha Creación': new Date(order.createdAt).toLocaleString(),
-                    'Última Actualización': new Date(order.updatedAt).toLocaleString()
-                }));
-
-                this.downloadCSV(data, `pedidos_${new Date().toISOString().split('T')[0]}.csv`);
-            }
-
-            downloadCSV(data, filename) {
-                const headers = Object.keys(data[0]);
-                const csvContent = [
-                    headers.join(','),
-                    ...data.map(row => headers.map(header => `"${row[header]}"`).join(','))
-                ].join('\n');
-
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                const url = URL.createObjectURL(blob);
-                
-                link.setAttribute('href', url);
-                link.setAttribute('download', filename);
-                link.style.visibility = 'hidden';
-                
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-
-            getStatusText(status) {
-                const statusMap = {
-                    'pending': 'Pendiente',
-                    'preparing': 'Preparando',
-                    'ready': 'Listo',
-                    'delivered': 'Entregado'
-                };
-                return statusMap[status] || status;
-            }
-        }
-
-        // Initialize application
-        const orderManager = new OrderManager();
-
-        // Form handling
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (validateForm()) {
-                const formData = new FormData(this);
-                const orderData = {
-                    customerName: formData.get('customerName') || document.getElementById('customerName').value,
-                    customerPhone: formData.get('customerPhone') || document.getElementById('customerPhone').value,
-                    customerAddress: formData.get('customerAddress') || document.getElementById('customerAddress').value,
-                    type: formData.get('orderType') || document.getElementById('orderType').value,
-                    total: formData.get('orderTotal') || document.getElementById('orderTotal').value,
-                    products: formData.get('orderProducts') || document.getElementById('orderProducts').value,
-                    notes: formData.get('orderNotes') || document.getElementById('orderNotes').value
-                };
-
-                const order = orderManager.createOrder(orderData);
-                showToast(`Pedido #${order.id} creado exitosamente`, 'success');
-                
-                this.reset();
-                hideModal('orderModal');
-                renderOrders();
-                updateStatistics();
-            }
-        });
-
-        // Search and filter functionality
-        document.getElementById('searchInput').addEventListener('input', debounce(filterOrders, 300));
-        document.getElementById('statusFilter').addEventListener('change', filterOrders);
-        document.getElementById('typeFilter').addEventListener('change', filterOrders);
-        document.getElementById('roleSelect').addEventListener('change', function() {
-            orderManager.currentRole = this.value;
-            orderManager.saveToStorage();
-            renderOrders();
-            updateStatistics();
-        });
-
-        // Utility functions
-        function validateForm() {
-            const requiredFields = ['customerName', 'customerPhone', 'customerAddress', 'orderType', 'orderTotal', 'orderProducts'];
-            let isValid = true;
-
-            requiredFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (!field.value.trim()) {
-                    field.classList.add('error');
-                    isValid = false;
-                } else {
-                    field.classList.remove('error');
-                }
-            });
-
-            if (!isValid) {
-                showToast('Por favor, completa todos los campos obligatorios', 'error');
-            }
-
-            return isValid;
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        function filterOrders() {
-            const search = document.getElementById('searchInput').value;
-            const statusFilter = document.getElementById('statusFilter').value;
-            const typeFilter = document.getElementById('typeFilter').value;
-
-            const filters = {
-                search: search,
-                status: statusFilter,
-                type: typeFilter
-            };
-
-            renderOrders(filters);
-        }
-
-        function renderOrders(filters = {}) {
-            const ordersList = document.getElementById('ordersList');
-            const orders = orderManager.getOrders(filters);
-
-            if (orders.length === 0) {
-                ordersList.innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: #666;">
-                        <p>No hay pedidos que mostrar</p>
-                    </div>
-                `;
-                return;
-            }
-
-            ordersList.innerHTML = orders.map(order => `
-                <div class="order-item">
-                    <div class="order-info">
-                        <h4>Pedido #${order.id}</h4>
-                        <div class="order-details">
-                            <strong>${order.customerName}</strong><br>
-                            📞 ${order.customerPhone}<br>
-                            📍 ${order.customerAddress}<br>
-                            🍕 ${order.products}<br>
-                            💰 $${parseFloat(order.total).toFixed(2)}<br>
-                            🕐 ${new Date(order.createdAt).toLocaleString()}
-                            ${order.notes ? `<br>📝 ${order.notes}` : ''}
+                        <div class="form-group">
+                            <label for="unit-price">
+                                <i class="bi bi-currency-dollar"></i> Precio Unitario
+                            </label>
+                            <input type="number" id="unit-price" name="unitPrice" step="0.01" min="0" required>
                         </div>
                     </div>
-                    <div>
-                        <span class="status-badge status-${order.status}">${orderManager.getStatusText(order.status)}</span>
+
+                    <div class="form-group">
+                        <label for="delivery-address">
+                            <i class="bi bi-geo-alt"></i> Dirección de Entrega
+                        </label>
+                        <textarea id="delivery-address" name="deliveryAddress" rows="2" required></textarea>
                     </div>
-                    <div>
-                        <span class="status-badge ${order.type === 'delivery' ? 'status-preparing' : 'status-ready'}">
-                            ${order.type === 'delivery' ? '🚗 Delivery' : '🏪 Recogida'}
+
+                    <div class="form-group">
+                        <label for="order-notes">
+                            <i class="bi bi-sticky"></i> Notas del Pedido
+                        </label>
+                        <textarea id="order-notes" name="orderNotes" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Registrar Pedido
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Limpiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de Pedidos del Día -->
+            <div class="orders-section">
+                <div class="section-header">
+                    <h2>Pedidos de Hoy</h2>
+                    <div class="order-summary">
+                        <span id="total-orders" class="summary-stat">
+                            <i class="bi bi-list-ol"></i> <strong>0</strong> pedidos
+                        </span>
+                        <span id="total-revenue" class="summary-stat">
+                            <i class="bi bi-currency-dollar"></i> Total: <strong>$0.00</strong>
                         </span>
                     </div>
-                    <div class="order-actions">
-                        ${getStatusButtons(order)}
-                        <button class="btn btn-danger" onclick="deleteOrderConfirm(${order.id})" style="padding: 0.5rem;">🗑️</button>
+                </div>
+                <div id="orders-list" class="orders-list">
+                    <div class="no-orders">
+                        <i class="bi bi-inbox"></i>
+                        <p>No hay pedidos registrados para hoy</p>
                     </div>
                 </div>
-            `).join('');
-        }
+            </div>
+        </main>
 
-        function getStatusButtons(order) {
-            const currentRole = orderManager.currentRole;
-            let buttons = [];
+        <!-- Sección Calendario -->
+        <section id="calendar-section" class="calendar-section hidden">
+            <div class="calendar-header">
+                <h2>Calendario de Pedidos</h2>
+                <div class="calendar-controls">
+                    <button id="prev-month" class="btn btn-secondary">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <h3 id="current-month-year"></h3>
+                    <button id="next-month" class="btn btn-secondary">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="calendar-container">
+                <div class="calendar-weekdays">
+                    <div class="weekday">Dom</div>
+                    <div class="weekday">Lun</div>
+                    <div class="weekday">Mar</div>
+                    <div class="weekday">Mié</div>
+                    <div class="weekday">Jue</div>
+                    <div class="weekday">Vie</div>
+                    <div class="weekday">Sáb</div>
+                </div>
+                <div id="calendar-grid" class="calendar-grid">
+                    <!-- Días del calendario se generarán dinámicamente -->
+                </div>
+            </div>
+            <div id="selected-date-info" class="selected-date-info">
+                <h3>Pedidos del día seleccionado</h3>
+                <div id="date-orders" class="date-orders">
+                    Selecciona una fecha para ver los pedidos
+                </div>
+            </div>
+        </section>
 
-            // Status progression logic based on role
-            if (currentRole === 'socio-a') {
-                // Socio A handles preparation
-                if (order.status === 'pending') {
-                    buttons.push(`<button class="btn btn-warning" onclick="updateOrderStatus(${order.id}, 'preparing')">Iniciar Preparación</button>`);
-                } else if (order.status === 'preparing') {
-                    buttons.push(`<button class="btn btn-success" onclick="updateOrderStatus(${order.id}, 'ready')">Marcar Listo</button>`);
-                }
-            } else if (currentRole === 'socio-b') {
-                // Socio B handles delivery coordination
-                if (order.status === 'ready' && order.type === 'delivery') {
-                    buttons.push(`<button class="btn btn-primary" onclick="updateOrderStatus(${order.id}, 'delivered')">Marcar Entregado</button>`);
-                } else if (order.status === 'ready' && order.type === 'pickup') {
-                    buttons.push(`<button class="btn btn-primary" onclick="updateOrderStatus(${order.id}, 'delivered')">Entregado</button>`);
-                }
-            }
+        <!-- Sección Historial -->
+        <section id="history-section" class="history-section hidden">
+            <div class="history-header">
+                <h2>Historial de Pedidos</h2>
+                <div class="history-controls">
+                    <div class="search-group">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="search-input" placeholder="Buscar por cliente, producto...">
+                    </div>
+                    <div class="date-filters">
+                        <input type="date" id="date-start" class="date-input">
+                        <span>hasta</span>
+                        <input type="date" id="date-end" class="date-input">
+                        <button id="clear-filters" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-            return buttons.join('');
-        }
+            <div class="statistics-panel">
+                <h3>Estadísticas</h3>
+                <div id="statistics-content" class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="bi bi-list-ol"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Pedidos</span>
+                            <span class="stat-value" id="stat-count">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="bi bi-graph-up"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Ingresos Totales</span>
+                            <span class="stat-value" id="stat-revenue">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="bi bi-calculator"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Pedido Promedio</span>
+                            <span class="stat-value" id="stat-average">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="bi bi-star"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Producto Favorito</span>
+                            <span class="stat-value" id="stat-top-product">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        function updateOrderStatus(orderId, newStatus) {
-            orderManager.updateOrder(orderId, { status: newStatus });
-            showToast(`Estado actualizado a: ${orderManager.getStatusText(newStatus)}`, 'success');
-            renderOrders();
-            updateStatistics();
-        }
+            <div class="history-results">
+                <div class="results-header">
+                    <span id="results-count">Mostrando todos los pedidos</span>
+                    <div class="pagination-info">
+                        <span id="pagination-text">Página 1 de 1</span>
+                        <div class="pagination-controls">
+                            <button id="prev-page" class="btn btn-small" disabled>
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <button id="next-page" class="btn btn-small" disabled>
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="history-list" class="history-list">
+                    <!-- Resultados del historial se mostrarán aquí -->
+                </div>
+            </div>
+        </section>
+    </div>
 
-        function deleteOrderConfirm(orderId) {
-            if (confirm('¿Estás seguro de que quieres eliminar este pedido?')) {
-                orderManager.deleteOrder(orderId);
-                showToast('Pedido eliminado', 'success');
-                renderOrders();
-                updateStatistics();
-            }
-        }
-
-        function updateStatistics() {
-            const stats = orderManager.getStatistics();
-            document.getElementById('totalOrders').textContent = stats.total;
-            document.getElementById('pendingOrders').textContent = stats.pending;
-            document.getElementById('readyOrders').textContent = stats.ready;
-            document.getElementById('deliveredOrders').textContent = stats.delivered;
-        }
-
-        function exportData() {
-            orderManager.exportData();
-            showToast('Datos exportados exitosamente', 'success');
-        }
-
-        function showModal(modalId) {
-            document.getElementById(modalId).classList.add('show');
-        }
-
-        function hideModal(modalId) {
-            document.getElementById(modalId).classList.remove('show');
-        }
-
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            
-            document.body.appendChild(toast);
-            
-            setTimeout(() => toast.classList.add('show'), 100);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => document.body.removeChild(toast), 300);
-            }, 4000);
-        }
-
-        // Close modal when clicking outside
-        window.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal')) {
-                e.target.classList.remove('show');
-            }
-        });
-
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('roleSelect').value = orderManager.currentRole;
-            renderOrders();
-            updateStatistics();
-            
-            // Check for delayed orders every 5 minutes
-            setInterval(() => orderManager.checkDelayedOrders(), 5 * 60 * 1000);
-            
-            showToast('Sistema de gestión de pedidos iniciado', 'success');
-        });
-
-        // Service Worker Registration (PWA)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(function(registration) {
-                console.log('SW registrado:', registration);
-            }).catch(function(error) {
-                console.log('SW falló:', error);
-            });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
