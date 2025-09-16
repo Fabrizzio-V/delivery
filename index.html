@@ -239,3 +239,181 @@
     <script src="script.js"></script>
 </body>
 </html>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quantity">
+                                <i class="bi bi-123"></i> Cantidad
+                            </label>
+                            <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="unit-price">
+                                <i class="bi bi-currency-dollar"></i> Precio Unitario
+                            </label>
+                            <input type="number" id="unit-price" name="unitPrice" step="0.01" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="delivery-address">
+                            <i class="bi bi-geo-alt"></i> Dirección de Entrega
+                        </label>
+                        <textarea id="delivery-address" name="deliveryAddress" rows="2" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="order-notes">
+                            <i class="bi bi-sticky"></i> Notas del Pedido
+                        </label>
+                        <textarea id="order-notes" name="orderNotes" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Registrar Pedido
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Limpiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de Pedidos del Día -->
+            <div class="orders-section">
+                <div class="section-header">
+                    <h2>Pedidos de Hoy</h2>
+                    <div class="order-summary">
+                        <span id="total-orders" class="summary-stat">
+                            <i class="bi bi-list-ol"></i> <strong>0</strong> pedidos
+                        </span>
+                        <span id="total-revenue" class="summary-stat">
+                            <i class="bi bi-currency-dollar"></i> Total: <strong>$0.00</strong>
+                        </span>
+                    </div>
+                </div>
+                <div id="orders-list" class="orders-list">
+                    <div class="no-orders">
+                        <i class="bi bi-inbox"></i>
+                        <p>No hay pedidos registrados para hoy</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sección Calendario -->
+        <section id="calendar-section" class="calendar-section hidden">
+            <div class="calendar-header">
+                <h2>Calendario de Pedidos</h2>
+                <div class="calendar-controls">
+                    <button id="prev-month" class="btn btn-secondary">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <h3 id="current-month-year"></h3>
+                    <button id="next-month" class="btn btn-secondary">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="calendar-container">
+                <div class="calendar-weekdays">
+                    <div class="weekday">Dom</div>
+                    <div class="weekday">Lun</div>
+                    <div class="weekday">Mar</div>
+                    <div class="weekday">Mié</div>
+                    <div class="weekday">Jue</div>
+                    <div class="weekday">Vie</div>
+                    <div class="weekday">Sáb</div>
+                </div>
+                <div id="calendar-grid" class="calendar-grid">
+                    <!-- Días del calendario se generarán dinámicamente -->
+                </div>
+            </div>
+            <div id="selected-date-info" class="selected-date-info">
+                <h3>Pedidos del día seleccionado</h3>
+                <div id="date-orders" class="date-orders">
+                    Selecciona una fecha para ver los pedidos
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Historial -->
+        <section id="history-section" class="history-section hidden">
+            <div class="history-header">
+                <h2>Historial de Pedidos</h2>
+                <div class="history-controls">
+                    <div class="search-group">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="search-input" placeholder="Buscar por cliente, producto...">
+                    </div>
+                    <div class="date-filters">
+                        <input type="date" id="date-start" class="date-input">
+                        <span>hasta</span>
+                        <input type="date" id="date-end" class="date-input">
+                        <button id="clear-filters" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="statistics-panel">
+                <h3>Estadísticas</h3>
+                <div id="statistics-content" class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="bi bi-list-ol"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Pedidos</span>
+                            <span class="stat-value" id="stat-count">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="bi bi-graph-up"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Ingresos Totales</span>
+                            <span class="stat-value" id="stat-revenue">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="bi bi-calculator"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Pedido Promedio</span>
+                            <span class="stat-value" id="stat-average">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="bi bi-star"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Producto Favorito</span>
+                            <span class="stat-value" id="stat-top-product">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-results">
+                <div class="results-header">
+                    <span id="results-count">Mostrando todos los pedidos</span>
+                    <div class="pagination-info">
+                        <span id="pagination-text">Página 1 de 1</span>
+                        <div class="pagination-controls">
+                            <button id="prev-page" class="btn btn-small" disabled>
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <button id="next-page" class="btn btn-small" disabled>
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="history-list" class="history-list">
+                    <!-- Resultados del historial se mostrarán aquí -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
