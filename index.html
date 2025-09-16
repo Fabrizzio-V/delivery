@@ -4,246 +4,773 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión de Pedidos</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .section.hidden {
+            display: none;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .orders-summary {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .orders-summary strong {
+            color: #27ae60;
+            font-size: 1.2rem;
+        }
+
+        .order-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .order-header h3 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-processing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .calendar-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-nav {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .calendar-nav:hover {
+            background: #2980b9;
+        }
+
+        .calendar-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .weekday {
+            background: #34495e;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .calendar-day {
+            background: white;
+            padding: 15px 8px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+            min-height: 40px;
+        }
+
+        .calendar-day:hover {
+            background: #ecf0f1;
+        }
+
+        .calendar-day.today {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.selected {
+            background: #27ae60;
+            color: white;
+        }
+
+        .calendar-day.other-month {
+            color: #bdc3c7;
+            background: #f8f9fa;
+        }
+
+        .calendar-day.has-orders {
+            position: relative;
+        }
+
+        .calendar-day.has-orders::after {
+            content: '●';
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+            color: #e74c3c;
+            font-size: 10px;
+        }
+
+        .selected-date-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .search-filters {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: #27ae60;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .search-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .calendar-day {
+                padding: 10px 4px;
+                font-size: 12px;
+                min-height: 35px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <header class="app-header">
-            <h1>Sistema de Gestión de Pedidos</h1>
-            <div class="header-actions">
-                <button id="toggle-calendar" class="btn btn-secondary">
-                    <i class="bi bi-calendar3"></i> Calendario
-                </button>
-                <button id="toggle-history" class="btn btn-secondary">
-                    <i class="bi bi-clock-history"></i> Historial
-                </button>
-                <button id="new-order" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Nuevo Pedido
-                </button>
-                <button id="debug-btn" class="btn btn-secondary">
-                    <i class="bi bi-bug"></i> Debug
-                </button>
-                <button id="test-calendar" class="btn btn-secondary">
-                    <i class="bi bi-calendar-check"></i> Test Calendario
-                </button>
+        <header class="header">
+            <h1>📋 Sistema de Gestión de Pedidos</h1>
+            <div class="nav-buttons">
+                <button class="btn" onclick="showSection('orders')">📋 Pedidos</button>
+                <button class="btn" onclick="showSection('calendar')">📅 Calendario</button>
+                <button class="btn" onclick="showSection('history')">📊 Historial</button>
             </div>
         </header>
 
-        <!-- Sección Principal de Pedidos -->
-        <main id="main-content" class="main-content hidden">
-            <div class="order-form-section">
-                <h2>Registrar Nuevo Pedido</h2>
-                <form id="order-form" class="order-form">
-                    <div class="form-group">
-                        <label for="customer-name">
-                            <i class="bi bi-person"></i> Nombre del Cliente
-                        </label>
-                        <input type="text" id="customer-name" name="customerName" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="customer-phone">
-                            <i class="bi bi-telephone"></i> Teléfono
-                        </label>
-                        <input type="tel" id="customer-phone" name="customerPhone" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="product-type">
-                            <i class="bi bi-box"></i> Tipo de Producto
-                        </label>
-                        <select id="product-type" name="productType" required>
-                            <option value="">Seleccionar producto</option>
-                            <option value="pizza">Pizza</option>
-                            <option value="hamburguesa">Hamburguesa</option>
-                            <option value="ensalada">Ensalada</option>
-                            <option value="bebida">Bebida</option>
-                            <option value="postre">Postre</option>
-                            <option value="combo">Combo</option>
-                        </select>
-                    </div>
-
-                    <div class="form-row">
+        <!-- Sección Pedidos -->
+        <div id="orders-section" class="section">
+            <h2>Registrar Nuevo Pedido</h2>
+            <form id="order-form">
+                <div class="form-grid">
+                    <div>
                         <div class="form-group">
-                            <label for="quantity">
-                                <i class="bi bi-123"></i> Cantidad
-                            </label>
-                            <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+                            <label class="form-label">👤 Nombre del Cliente</label>
+                            <input type="text" class="form-input" id="customerName" required>
                         </div>
-
                         <div class="form-group">
-                            <label for="unit-price">
-                                <i class="bi bi-currency-dollar"></i> Precio Unitario
-                            </label>
-                            <input type="number" id="unit-price" name="unitPrice" step="0.01" min="0" required>
+                            <label class="form-label">📞 Teléfono</label>
+                            <input type="tel" class="form-input" id="customerPhone" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">📦 Producto</label>
+                                <input type="text" class="form-input" id="productType" placeholder="Ej: Pizza Margherita, Hamburguesa clásica..." required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">🔢 Cantidad</label>
+                                <input type="number" class="form-input" id="quantity" min="1" value="1" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">💰 Precio Total</label>
+                            <input type="number" class="form-input" id="totalPrice" step="0.01" min="0" required>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="delivery-address">
-                            <i class="bi bi-geo-alt"></i> Dirección de Entrega
-                        </label>
-                        <textarea id="delivery-address" name="deliveryAddress" rows="2" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="order-notes">
-                            <i class="bi bi-sticky"></i> Notas del Pedido
-                        </label>
-                        <textarea id="order-notes" name="orderNotes" rows="2"></textarea>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle"></i> Registrar Pedido
-                        </button>
-                        <button type="reset" class="btn btn-secondary">
-                            <i class="bi bi-arrow-clockwise"></i> Limpiar
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Lista de Pedidos del Día -->
-            <div class="orders-section">
-                <div class="section-header">
-                    <h2>Pedidos de Hoy</h2>
-                    <div class="order-summary">
-                        <span id="total-orders" class="summary-stat">
-                            <i class="bi bi-list-ol"></i> <strong>0</strong> pedidos
-                        </span>
-                        <span id="total-revenue" class="summary-stat">
-                            <i class="bi bi-currency-dollar"></i> Total: <strong>$0.00</strong>
-                        </span>
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label">📍 Dirección de Entrega</label>
+                            <textarea class="form-textarea" id="deliveryAddress" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📝 Notas del Pedido</label>
+                            <textarea class="form-textarea" id="orderNotes" rows="2"></textarea>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <button type="submit" class="btn">✅ Registrar Pedido</button>
+                            <button type="reset" class="btn btn-secondary" style="margin-left: 10px;">🔄 Limpiar</button>
+                        </div>
                     </div>
                 </div>
-                <div id="orders-list" class="orders-list">
-                    <div class="no-orders">
-                        <i class="bi bi-inbox"></i>
-                        <p>No hay pedidos registrados para hoy</p>
-                    </div>
+            </form>
+
+            <div class="orders-summary">
+                <div id="daily-summary">
+                    <strong>0</strong> pedidos hoy - Total: <strong>$0.00</strong>
                 </div>
             </div>
-        </main>
+
+            <div id="orders-list">
+                <div class="no-orders">
+                    📭 No hay pedidos registrados para hoy
+                </div>
+            </div>
+        </div>
 
         <!-- Sección Calendario -->
-        <section id="calendar-section" class="calendar-section">
-            <div class="calendar-header">
-                <h2>Calendario de Pedidos</h2>
-                <div class="calendar-controls">
-                    <button id="prev-month" class="btn btn-secondary">
-                        <i class="bi bi-chevron-left"></i>
-                    </button>
-                    <h3 id="current-month-year">Cargando...</h3>
-                    <button id="next-month" class="btn btn-secondary">
-                        <i class="bi bi-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
+        <div id="calendar-section" class="section hidden">
+            <h2>📅 Calendario de Pedidos</h2>
             <div class="calendar-container">
-                <div class="calendar-grid-wrapper">
-                    <div class="calendar-weekdays">
-                        <div class="weekday">Dom</div>
-                        <div class="weekday">Lun</div>
-                        <div class="weekday">Mar</div>
-                        <div class="weekday">Mié</div>
-                        <div class="weekday">Jue</div>
-                        <div class="weekday">Vie</div>
-                        <div class="weekday">Sáb</div>
-                    </div>
-                    <div id="calendar-grid" class="calendar-grid">
-                        <!-- Días del calendario se generarán dinámicamente -->
-                        <div style="grid-column: span 7; padding: 2rem; text-align: center; color: #666;">
-                            Cargando calendario...
-                        </div>
+                <div class="calendar-header">
+                    <button class="calendar-nav" onclick="changeMonth(-1)">◀</button>
+                    <h3 class="calendar-title" id="calendar-title"></h3>
+                    <button class="calendar-nav" onclick="changeMonth(1)">▶</button>
+                </div>
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- El calendario se generará aquí -->
+                </div>
+                <div class="selected-date-info">
+                    <h3>📋 Pedidos del día seleccionado</h3>
+                    <div id="date-orders">
+                        Selecciona una fecha para ver los pedidos
                     </div>
                 </div>
             </div>
-            <div id="selected-date-info" class="selected-date-info">
-                <h3>Pedidos del día seleccionado</h3>
-                <div id="date-orders" class="date-orders">
-                    Selecciona una fecha para ver los pedidos
-                </div>
-            </div>
-        </section>
+        </div>
 
         <!-- Sección Historial -->
-        <section id="history-section" class="history-section hidden">
-            <div class="history-header">
-                <h2>Historial de Pedidos</h2>
-                <div class="history-controls">
-                    <div class="search-group">
-                        <i class="bi bi-search"></i>
-                        <input type="text" id="search-input" placeholder="Buscar por cliente, producto...">
-                    </div>
-                    <div class="date-filters">
-                        <input type="date" id="date-start" class="date-input">
-                        <span>hasta</span>
-                        <input type="date" id="date-end" class="date-input">
-                        <button id="clear-filters" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Limpiar
-                        </button>
-                    </div>
+        <div id="history-section" class="section hidden">
+            <h2>📊 Historial de Pedidos</h2>
+            <div class="search-filters">
+                <div class="search-row">
+                    <input type="text" class="form-input" id="search-input" placeholder="🔍 Buscar por cliente o producto...">
+                    <input type="date" class="form-input" id="date-start">
+                    <input type="date" class="form-input" id="date-end">
+                    <button class="btn" onclick="searchOrders()">🔍 Buscar</button>
                 </div>
             </div>
-
-            <div class="statistics-panel">
-                <h3>Estadísticas</h3>
-                <div id="statistics-content" class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-icon"><i class="bi bi-list-ol"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">Total Pedidos</span>
-                            <span class="stat-value" id="stat-count">0</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon"><i class="bi bi-graph-up"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">Ingresos Totales</span>
-                            <span class="stat-value" id="stat-revenue">$0.00</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon"><i class="bi bi-calculator"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">Pedido Promedio</span>
-                            <span class="stat-value" id="stat-average">$0.00</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon"><i class="bi bi-star"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">Producto Favorito</span>
-                            <span class="stat-value" id="stat-top-product">-</span>
-                        </div>
-                    </div>
-                </div>
+            <div id="history-list">
+                <!-- Los resultados aparecerán aquí -->
             </div>
-
-            <div class="history-results">
-                <div class="results-header">
-                    <span id="results-count">Mostrando todos los pedidos</span>
-                    <div class="pagination-info">
-                        <span id="pagination-text">Página 1 de 1</span>
-                        <div class="pagination-controls">
-                            <button id="prev-page" class="btn btn-small" disabled>
-                                <i class="bi bi-chevron-left"></i>
-                            </button>
-                            <button id="next-page" class="btn btn-small" disabled>
-                                <i class="bi bi-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div id="history-list" class="history-list">
-                    <!-- Resultados del historial se mostrarán aquí -->
-                </div>
-            </div>
-        </section>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Variables globales
+        let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        let currentDate = new Date();
+        let selectedDate = new Date();
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('orders');
+            renderTodayOrders();
+            renderCalendar();
+            updateDailySummary();
+            
+            // Event listeners
+            document.getElementById('order-form').addEventListener('submit', handleOrderSubmit);
+            document.getElementById('search-input').addEventListener('input', searchOrders);
+            document.getElementById('date-start').addEventListener('change', searchOrders);
+            document.getElementById('date-end').addEventListener('change', searchOrders);
+        });
+
+        // Navegación entre secciones
+        function showSection(sectionName) {
+            // Ocultar todas las secciones
+            document.getElementById('orders-section').classList.add('hidden');
+            document.getElementById('calendar-section').classList.add('hidden');
+            document.getElementById('history-section').classList.add('hidden');
+            
+            // Mostrar sección seleccionada
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+            
+            if (sectionName === 'calendar') {
+                renderCalendar();
+            } else if (sectionName === 'history') {
+                renderHistory();
+            }
+        }
+
+        // Manejo de formulario
+        function handleOrderSubmit(e) {
+            e.preventDefault();
+            
+            const order = {
+                id: Date.now(),
+                customerName: document.getElementById('customerName').value,
+                customerPhone: document.getElementById('customerPhone').value,
+                productType: document.getElementById('productType').value,
+                quantity: parseInt(document.getElementById('quantity').value),
+                totalPrice: parseFloat(document.getElementById('totalPrice').value),
+                deliveryAddress: document.getElementById('deliveryAddress').value,
+                orderNotes: document.getElementById('orderNotes').value,
+                date: new Date().toISOString().split('T')[0],
+                timestamp: new Date().toISOString(),
+                status: 'pending'
+            };
+
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            
+            showNotification('Pedido registrado exitosamente', 'success');
+            document.getElementById('order-form').reset();
+            renderTodayOrders();
+            updateDailySummary();
+        }
+
+        // Renderizar pedidos del día
+        function renderTodayOrders() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayOrders = orders.filter(order => order.date === today);
+            const ordersList = document.getElementById('orders-list');
+
+            if (todayOrders.length === 0) {
+                ordersList.innerHTML = '<div class="no-orders">📭 No hay pedidos registrados para hoy</div>';
+                return;
+            }
+
+            ordersList.innerHTML = todayOrders.map(order => `
+                <div class="order-item">
+                    <div class="order-header">
+                        <h3>${order.customerName}</h3>
+                        <span class="status-badge status-${order.status}">
+                            ${order.status === 'pending' ? '⏳ Pendiente' : 
+                              order.status === 'processing' ? '🔄 Procesando' : '✅ Completado'}
+                        </span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <strong>📞 Teléfono:</strong> ${order.customerPhone}<br>
+                            <strong>📦 Producto:</strong> ${order.quantity}x ${order.productType}<br>
+                            <strong>💰 Total:</strong> $${order.totalPrice.toFixed(2)}
+                        </div>
+                        <div>
+                            <strong>📍 Dirección:</strong> ${order.deliveryAddress}<br>
+                            ${order.orderNotes ? `<strong>📝 Notas:</strong> ${order.orderNotes}<br>` : ''}
+                            <strong>⏰ Hora:</strong> ${new Date(order.timestamp).toLocaleTimeString()}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Actualizar resumen diario
+        function updateDailySummary() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayOrders = orders.filter(order => order.date === today);
+            const total = todayOrders.reduce((sum, order) => sum + order.totalPrice, 0);
+            
+            document.getElementById('daily-summary').innerHTML = `
+                <strong>${todayOrders.length}</strong> pedidos hoy - Total: <strong>$${total.toFixed(2)}</strong>
+            `;
+        }
+
+        // Renderizar calendario
+        function renderCalendar() {
+            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            
+            document.getElementById('calendar-title').textContent = 
+                `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+
+            let calendarHTML = '';
+            
+            // Días de la semana
+            const weekdays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            weekdays.forEach(day => {
+                calendarHTML += `<div class="weekday">${day}</div>`;
+            });
+
+            // Días vacíos del mes anterior
+            for (let i = 0; i < startingDay; i++) {
+                const prevMonthDay = new Date(year, month, 0 - (startingDay - 1 - i));
+                calendarHTML += `<div class="calendar-day other-month">${prevMonthDay.getDate()}</div>`;
+            }
+
+            // Días del mes actual
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayOrders = orders.filter(order => order.date === dateStr);
+                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+                const isSelected = selectedDate.getFullYear() === year && selectedDate.getMonth() === month && selectedDate.getDate() === day;
+                
+                let classes = 'calendar-day';
+                if (isToday) classes += ' today';
+                if (isSelected) classes += ' selected';
+                if (dayOrders.length > 0) classes += ' has-orders';
+
+                calendarHTML += `<div class="${classes}" onclick="selectDate('${dateStr}')">${day}</div>`;
+            }
+
+            // Completar con días del mes siguiente
+            const totalCells = 42; // 6 filas x 7 días
+            const cellsUsed = startingDay + daysInMonth;
+            for (let day = 1; cellsUsed + day - 1 < totalCells; day++) {
+                calendarHTML += `<div class="calendar-day other-month">${day}</div>`;
+            }
+
+            document.getElementById('calendar-grid').innerHTML = calendarHTML;
+        }
+
+        // Cambiar mes del calendario
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        // Seleccionar fecha en calendario
+        function selectDate(dateStr) {
+            selectedDate = new Date(dateStr);
+            renderCalendar();
+            
+            const dayOrders = orders.filter(order => order.date === dateStr);
+            const dateOrdersDiv = document.getElementById('date-orders');
+            
+            if (dayOrders.length === 0) {
+                dateOrdersDiv.innerHTML = `
+                    <div class="no-orders">
+                        📭 No hay pedidos para el ${new Date(dateStr).toLocaleDateString('es-ES', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}
+                    </div>
+                `;
+            } else {
+                const total = dayOrders.reduce((sum, order) => sum + order.totalPrice, 0);
+                dateOrdersDiv.innerHTML = `
+                    <div style="background: #e8f5e8; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        <strong>${dayOrders.length} pedidos</strong> - Total: <strong>$${total.toFixed(2)}</strong>
+                    </div>
+                    ${dayOrders.map(order => `
+                        <div class="order-item">
+                            <strong>${order.customerName}</strong> - ${order.quantity}x ${order.productType} - $${order.totalPrice.toFixed(2)}
+                            <br><small>📞 ${order.customerPhone} | 📍 ${order.deliveryAddress}</small>
+                        </div>
+                    `).join('')}
+                `;
+            }
+        }
+
+        // Renderizar historial
+        function renderHistory() {
+            const historyList = document.getElementById('history-list');
+            if (orders.length === 0) {
+                historyList.innerHTML = '<div class="no-orders">📭 No hay pedidos en el historial</div>';
+                return;
+            }
+
+            const sortedOrders = [...orders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            historyList.innerHTML = sortedOrders.map(order => `
+                <div class="order-item">
+                    <div class="order-header">
+                        <h3>${order.customerName}</h3>
+                        <span class="status-badge status-${order.status}">
+                            ${order.status === 'pending' ? '⏳ Pendiente' : 
+                              order.status === 'processing' ? '🔄 Procesando' : '✅ Completado'}
+                        </span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <strong>📦 Producto:</strong> ${order.quantity}x ${order.productType}<br>
+                            <strong>💰 Total:</strong> $${order.totalPrice.toFixed(2)}<br>
+                            <strong>📞 Teléfono:</strong> ${order.customerPhone}
+                        </div>
+                        <div>
+                            <strong>📅 Fecha:</strong> ${new Date(order.timestamp).toLocaleDateString()}<br>
+                            <strong>⏰ Hora:</strong> ${new Date(order.timestamp).toLocaleTimeString()}<br>
+                            <strong>📍 Dirección:</strong> ${order.deliveryAddress}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Buscar pedidos
+        function searchOrders() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const startDate = document.getElementById('date-start').value;
+            const endDate = document.getElementById('date-end').value;
+            
+            let filteredOrders = orders;
+            
+            if (searchTerm) {
+                filteredOrders = filteredOrders.filter(order =>
+                    order.customerName.toLowerCase().includes(searchTerm) ||
+                    order.productType.toLowerCase().includes(searchTerm) ||
+                    order.customerPhone.includes(searchTerm)
+                );
+            }
+            
+            if (startDate) {
+                filteredOrders = filteredOrders.filter(order => order.date >= startDate);
+            }
+            
+            if (endDate) {
+                filteredOrders = filteredOrders.filter(order => order.date <= endDate);
+            }
+            
+            const historyList = document.getElementById('history-list');
+            if (filteredOrders.length === 0) {
+                historyList.innerHTML = '<div class="no-orders">🔍 No se encontraron pedidos con los criterios de búsqueda</div>';
+                return;
+            }
+            
+            const sortedOrders = filteredOrders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            historyList.innerHTML = sortedOrders.map(order => `
+                <div class="order-item">
+                    <div class="order-header">
+                        <h3>${order.customerName}</h3>
+                        <span class="status-badge status-${order.status}">
+                            ${order.status === 'pending' ? '⏳ Pendiente' : 
+                              order.status === 'processing' ? '🔄 Procesando' : '✅ Completado'}
+                        </span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <strong>📦 Producto:</strong> ${order.quantity}x ${order.productType}<br>
+                            <strong>💰 Total:</strong> $${order.totalPrice.toFixed(2)}<br>
+                            <strong>📞 Teléfono:</strong> ${order.customerPhone}
+                        </div>
+                        <div>
+                            <strong>📅 Fecha:</strong> ${new Date(order.timestamp).toLocaleDateString()}<br>
+                            <strong>⏰ Hora:</strong> ${new Date(order.timestamp).toLocaleTimeString()}<br>
+                            <strong>📍 Dirección:</strong> ${order.deliveryAddress}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Mostrar notificaciones
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
